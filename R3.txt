@@ -1,0 +1,291 @@
+R3(config)#ip rou
+R3(config)#ip rout
+R3(config)#ip route
+R3(config)#ip route 10.1.1.4 255.255.255.252 10.1.1.9
+%Invalid next hop address (it's this router)
+R3(config)#
+R3(config)#
+R3(config)#
+R3#
+R3#
+R3#ping 10.1.1.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.1.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R3#ping 10.1.1.5
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.1.1.5, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R3#ping 10.1.1.2
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.1.1.2, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+R3#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R3(config)#ip route 10.1.1.0 255.255.255.252 10.1.1.5
+R3(config)#
+R3#
+R3#ping 10.1.1.2
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.1.1.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R3#sh run
+Building configuration...
+
+Current configuration : 4318 bytes
+!
+! Last configuration change at 09:26:30 CET Tue Oct 20 2026
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition MANAGEMENT
+ rd 172:29
+ route-target export 172:29
+ route-target import 172:29
+ !
+ address-family ipv4
+ exit-address-family
+!         
+no logging console
+enable secret 5 $1$rUaJ$K.I1j35sDGxBEHNQzNnsk1
+!
+no aaa new-model
+!
+!
+!
+clock timezone CET 1 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip host access1v100.rivanit.com 192.168.1.131
+ip host access2v100.rivanit.com 192.168.1.132
+ip host core1v10.rivanit.com 10.2.1.1
+ip host core1v20.rivanit.com 10.2.2.1
+ip host core1v100.rivanit.com 192.168.1.129
+ip host core1e11.rivanit.com 10.1.4.6
+ip host core2v10.rivanit.com 10.2.1.2
+ip host core2v20.rivanit.com 10.2.2.2
+ip host core2v100.rivanit.com 192.168.1.130
+ip host core2e11.rivanit.com 10.1.4.10
+ip host edge10-R4e10.rivanit.com 10.1.4.5
+ip host edge10-R4e11.rivanit.com 10.1.4.9
+ip host edge10-R4e12.rivanit.com 10.1.1.10
+ip host fortinet-R3e12.rivanit.com 10.1.1.9
+ip host fortinet-R3e11.rivanit.com 10.1.1.6
+ip host paloalto-R2e11.rivanit.com 10.1.1.5
+ip host paloalto-R2e12.rivanit.com 10.1.1.2
+ip host ciscofirepower-R1e10.bgp.rivanit.com 10.1.1.1
+ip host ciscofirepower-R1e13.bgp.rivanit.com 209.9.9.1
+ip host ciscofirepower-R1e12.bgp.rivanit.com 207.7.7.1
+ip host ciscofirepower-R1e11.bgp.rivanit.com 208.8.8.1
+ip host corel44.isp1convergeict.com 44.44.44.44
+ip host core208e13.isp1convergeict.com 208.8.8.4
+ip host core24e11.isp1convergeict.com 24.2.4.4
+ip host core45e12.isp1convergeict.com 45.4.5.4
+ip host corel22.isp2pldt.net 22.22.22.22
+ip host core207e13.isp2pldt.net 207.7.7.2
+ip host core24e11.isp2pldt.net 24.2.4.2
+ip host core32e12.isp2pldt.net 32.3.2.2
+ip host core25e02.isp2pldt.net 25.2.5.2
+ip host corel33.isp3globe.com.ph 33.33.33.33
+ip host core209e13.isp3globe.com.ph 209.9.9.3
+ip host core32e12.isp3globe.com.ph 32.3.2.3
+ip host core35e11.isp3globe.com.ph 35.3.5.3
+ip host corel55.google.com 55.55.55.55
+ip host dns.google.com 8.8.8.8
+ip host core35e03.google.com 35.3.5.5
+ip host core25e02.google.com 25.2.5.5
+ip host core45e01.google.com 45.4.5.5
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!         
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback3
+ ip address 3.3.3.3 255.255.255.255
+ ipv6 address FEC0:3::3/122
+!
+interface Ethernet0/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet1/1
+ ip address 10.1.1.6 255.255.255.252
+ duplex auto
+ ipv6 address 2026::1:2/122
+!         
+interface Ethernet1/2
+ ip address 10.1.1.9 255.255.255.252
+ duplex auto
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet2/3
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet3/0
+ vrf forwarding MANAGEMENT
+ ip address 172.16.29.110 255.255.255.0
+ shutdown
+ duplex auto
+!
+interface Ethernet3/1
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet3/2
+ no ip address
+ shutdown
+ duplex auto
+!
+interface Ethernet3/3
+ no ip address
+ shutdown
+ duplex auto
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 10.1.1.0 255.255.255.252 10.1.1.5
+ip route 10.1.1.1 255.255.255.255 10.1.1.5
+ip route vrf MANAGEMENT 10.69.255.0 255.255.255.248 172.16.29.254
+!
+ipv6 ioam timestamp
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!         
+!
+!
+alias exec bp show ip int brief | ex una
+alias exec sr show ip route
+alias exec cn show cdp nei
+alias exec sp show ip protocols
+alias exec bp6 show ipv6 int brief | exc down
+alias exec sr6 show ipv6 route
+alias exec sbs6 show bgp ipv6 summ
+alias exec sc show run | sec
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ exec-timeout 0 0
+ no login
+ transport input all
+!
+!
+end
+        
