@@ -1,0 +1,332 @@
+CIR				Subnet				Rivan				Wildcard
+/18			255.255.192.0			3rd, 64i			0.0.63.255
+/27			255.255.255.224			4th, 32i			0.0.0.0.31
+/30			255.255.255.252			2nd, 4i				0.3.255.255	
+/28			255.255.255.240			4th, 16i			0.0.0.0.15
+
+
+Bit lenght
+42 3bits
+1800 11bits
+365 9bits
+980 10bits
+112 7bits
+
+
+
+
+
+Version: 2.0   10-14-2026
+---------------
+Login: root
+Pass: C1sc0123
+
+Get IP:
+rm -rf /etc/udev/rules.d/70-persistent-net.rules
+reboot
+
+Set NetAdapters:
+NetAdapter 1: NAT (208.8.8.0/24)
+NetAdapter 2: VMNet15 (10.255.10.0/24)
+NetAdapter 3: VMNet16 (10.69.255.0/29)
+NetAdapter 4: VMNet17 (10.69.255.8/29)
+
+!@cmd
+route add 172.16.29.0 mask 255.255.255.0 10.69.255.6
+
+
+#C1
+config t
+ router eigrp 100
+  no auto-summary
+  network 10.1.4.4 0.0.0.3
+  network 10.2.1.0 0.0.0.255
+  network 10.2.2.0 0.0.0.255
+  network 192.168.1.128 0.0.0.31
+end
+
+
+#C2
+config t
+ router eigrp 100
+  no auto-summary
+  network 10.1.4.8 0.0.0.3
+  network 10.2.1.0 0.0.0.255
+  network 10.2.2.0 0.0.0.255
+  network 192.168.1.128 0.0.0.31
+end
+~~~
+
+
+
+~~~
+
+EIGRP ROUTERS - 224.0.0.10 -multicast address ng eigrp
+
+#IGP
+-distance vector
+	EIGRP
+	RIP
+-link state
+	OSPF
+	ISIS
+#EGP
+	path vector
+	BGP
+
+
+----------------PATH
+
+#Longest prefixm match #Admin distance #Metric
+#Connected = 0
+#Static = 1
+#OSPF = 110
+#D = 90
+#D = 170
+#RIP = 120
+#ISIS = 115
+
+
+FS
+S
+FD
+
+UNEQUAL LOAD BALANCE
+#R4
+conf t
+ router eigrp 100
+	variance 10
+	
+	en1
+
+
+#R3
+conf t
+ router ospf 1
+  router-id 3.3.3.3
+  network 3.3.3.3 0.0.0.0 area 0
+  network 10.1.1.8 0.0.0.3 area 43
+  network 10.1.1.4 0.0.0.3 area 0
+  end
+
+
+#R4
+conf t
+ router ospf 1
+  router-id 4.4.4.4
+  network 4.4.4.4 0.0.0.0 area 43
+  network 10.1.1.8 0.0.0.3 area 43
+  end
+
+#R2
+conf t
+ router ospf 1
+  router-id 2.2.2.2
+  network 2.2.2.2 0.0.0.0 area 0
+  network 10.1.1.0 0.0.0.3 area 12
+  network 10.1.1.4 0.0.0.3 area 0
+  end
+  
+#R1
+conf t
+ router ospf 1
+  router-id 1.1.1.1
+  network 1.1.1.1 0.0.0.0 area 12
+  network 10.1.1.0 0.0.0.3 area 12
+  end
+  
+
+conf t
+ router ospf 1
+  router-id 1.1.1.1
+  exit
+ int lo1
+  ip ospf 1 area 12
+  exit
+ int e1/0
+  ip ospf 1 area 12
+  end
+
+
+
+OSP configure auth
+
+
+#R3 R4
+conf t
+key chain CCNA
+	key 1
+		key-string pass
+		crypto md5
+!
+int e1/2
+ip osp authentication key CCNA
+end
+
+##SEED METRIC FOR REDISTRIBUTE
+1. EIGRP - infinity
+2. RIP - infinity
+3. OSPF - 20 cose
+4. ISIS - 0
+5. BGP - base on IGP
+
+sh int e1/0 | s BW
+ MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+	 
+	 
+
+
+##OSPF
+Cost
+Ref BW / int BW
+100Mbps
+
+
+
+
+
+
+
+
+#corebaba
+conf t
+int lo10
+	ip add 192.168.52.52 255.255.255.255
+	ip ospf 1 area 52
+	end
+	
+
+conf t
+router eigrp 100
+	no network 192.168.0.0 0.0.255.255
+	network 192.168.52.0 0.0.0.255
+	router ospf 1
+		redistribute eigrp 100 subnets metric 2
+	end
+
+
+
+Area routes Link States
+1. Router information
+2. Type 2 LSA - network
+3. Type 3
+4. Type 5 - Type 4
+
+
+
+
+config t
+ router bgp 2
+ bgp log-neighbor-changes
+ neighbor 24.2.4.4 remote-as 45
+ neighbor 25.2.5.5  remote-as 45
+ neighbor 32.3.2.3  remote-as 3
+ neighbor 207.7.7.1  remote-as 1
+ address-family ipv4
+  neighbor 24.2.4.4 activate
+  neighbor 25.2.5.5 activate
+  neighbor 32.3.2.3 activate
+  neighbor 207.7.7.1 activate
+  network 24.2.4.4 mask 255.255.255.0
+  network 207.7.7.1 mask 255.255.255.0
+  network 32.3.2.3 mask 255.255.255.0
+  network 25.2.5.5 mask 255.255.255.0
+  network 22.22.22.22 mask 255.255.255.255
+  end
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  conf t
+ ip nat inside source static 10.1.4.6 208.8.8.100 
+ ip nat inside source static 10.1.4.10 207.7.7.100
+ ip nat inside source static 10.2.1.101 207.7.7.201
+ ip nat inside source static 10.2.1.102 207.7.7.201
+ ip nat inside source static 192.168.1.133 209.9.9.201
+ ip nat inside source static 10.2.2.133 209.9.9.202
+ end
+show ip nat translations
+
+
+clear ip nat trans *
+conf t
+ ip nat inside source list 1 pool NATPOOL overload
+ end
+ 
+ 
+ P1 207.7.7.201
+ P2 207.7.7.202
+ S1 209.9.9.201
+ S2 209.9.9.202
+
+
+
+
+
+8offices
+10.1.3.192/26
+3bits
+
+26+3 = /29
+4th, 8i
+
+
+
+1	10.1.3.192/26
+2	10.1.3.200
+3	10.1.3.208
+4	10.1.3.216
+5   10.1.3.224
+6	10.1.3.232
+7	10.1.3.240
+8	10.1.3.248
+
+
+
+
+32-5 = /27
+4th 32i
+
+10.1.3.192/27
+
+
+10.1.3.
+
+
+
+64 new site
+
+10.30.64.0/19
+6bits
+
+/25
+
+4th, 128i
+10.30.64.0/25
+10.30.64.128/25
+10.30.64.256/25
+10.30.65.0/25
+10.30.65.128/25
+10.30.65.256/25
+
+
+Sw01
+#int e0/0
+#no shut
+#ip add	10.30.65.1 255.255.255.128
+
+
+Sw02
+#int e0/0
+#no shut
+#ip add	10.30.65.126 255.255.255.128
+
+
+
+
